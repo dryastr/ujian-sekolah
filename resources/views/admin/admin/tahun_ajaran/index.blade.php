@@ -1,15 +1,15 @@
 @extends('layouts.main')
 
-@section('title', 'Manajemen Mata Pelajaran')
+@section('title', 'Manajemen Tahun Ajaran')
 
 @section('content')
     <div class="col-md-12 col-12">
         <div class="card">
             <div class="card-header">
                 <div class="d-flex align-items-center justify-content-between">
-                    <h4 class="card-title">Manajemen Mata Pelajaran</h4>
-                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">Tambah Mata
-                        Pelajaran</button>
+                    <h4 class="card-title">Manajemen Tahun Ajaran</h4>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">Tambah Tahun
+                        Ajaran</button>
                 </div>
             </div>
             <div class="card-content">
@@ -19,17 +19,19 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Nama Mata Pelajaran</th>
-                                    <th>Jurusan</th>
+                                    <th>Tahun Mulai</th>
+                                    <th>Tahun Selesai</th>
+                                    <th>Status</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($mataPelajarans as $item)
+                                @foreach ($tahunAjarans as $item)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $item->name }}</td>
-                                        <td>{{ $item->jurusan->name }}</td>
+                                        <td>{{ $item->tahun_mulai }}</td>
+                                        <td>{{ $item->tahun_selesai }}</td>
+                                        <td>{{ $item->status }}</td>
                                         <td class="text-nowrap">
                                             <div class="dropdown dropup">
                                                 <button class="btn btn-sm btn-secondary dropdown-toggle" type="button"
@@ -41,12 +43,12 @@
                                                     aria-labelledby="dropdownMenuButton-{{ $item->id }}">
                                                     <li>
                                                         <a class="dropdown-item" href="javascript:void(0)"
-                                                            onclick="openEditModal({{ $item->id }}, '{{ $item->name }}', '{{ $item->jurusan_id }}')">Ubah</a>
+                                                            onclick="openEditModal({{ $item->id }}, '{{ $item->tahun_mulai }}', '{{ $item->tahun_selesai }}', '{{ $item->status }}')">Ubah</a>
                                                     </li>
                                                     <li>
-                                                        <form action="{{ route('mata-pelajarans.destroy', $item->id) }}"
+                                                        <form action="{{ route('tahun-ajarans.destroy', $item->id) }}"
                                                             method="POST"
-                                                            onsubmit="return confirm('Apakah Anda yakin ingin menghapus mata pelajaran ini?')">
+                                                            onsubmit="return confirm('Apakah Anda yakin ingin menghapus tahun ajaran ini?')">
                                                             @csrf
                                                             @method('DELETE')
                                                             <button type="submit" class="dropdown-item">Hapus</button>
@@ -69,24 +71,29 @@
     <div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form action="{{ route('mata-pelajarans.store') }}" method="POST">
+                <form action="{{ route('tahun-ajarans.store') }}" method="POST">
                     @csrf
                     <div class="modal-header">
-                        <h5 class="modal-title" id="createModalLabel">Tambah Mata Pelajaran</h5>
+                        <h5 class="modal-title" id="createModalLabel">Tambah Tahun Ajaran</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label for="name" class="form-label">Nama Mata Pelajaran</label>
-                            <input type="text" class="form-control" id="name" name="name" required>
+                            <label for="tahun_mulai" class="form-label">Tahun Mulai</label>
+                            <input type="number" class="form-control" id="tahun_mulai" name="tahun_mulai" min="1900"
+                                max="2100" required>
                         </div>
                         <div class="mb-3">
-                            <label for="jurusan_id" class="form-label">Jurusan</label>
-                            <select class="form-select" id="jurusan_id" name="jurusan_id" required>
-                                <option value="" disabled selected>Pilih Jurusan</option>
-                                @foreach ($jurusans as $jurusan)
-                                    <option value="{{ $jurusan->id }}">{{ $jurusan->name }}</option>
-                                @endforeach
+                            <label for="tahun_selesai" class="form-label">Tahun Selesai</label>
+                            <input type="number" class="form-control" id="tahun_selesai" name="tahun_selesai"
+                                min="1900" max="2100" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="status" class="form-label">Status</label>
+                            <select class="form-select" id="status" name="status" required>
+                                <option value="" disabled selected>Pilih Status</option>
+                                <option value="aktif">Aktif</option>
+                                <option value="nonaktif">Nonaktif</option>
                             </select>
                         </div>
                     </div>
@@ -107,21 +114,26 @@
                     @csrf
                     @method('PUT')
                     <div class="modal-header">
-                        <h5 class="modal-title" id="editModalLabel">Ubah Mata Pelajaran</h5>
+                        <h5 class="modal-title" id="editModalLabel">Ubah Tahun Ajaran</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label for="editName" class="form-label">Nama Mata Pelajaran</label>
-                            <input type="text" class="form-control" id="editName" name="name" required>
+                            <label for="editTahunMulai" class="form-label">Tahun Mulai</label>
+                            <input type="number" class="form-control" id="editTahunMulai" name="tahun_mulai"
+                                min="1900" max="2100" required>
                         </div>
                         <div class="mb-3">
-                            <label for="editJurusanId" class="form-label">Jurusan</label>
-                            <select class="form-select" id="editJurusanId" name="jurusan_id" required>
-                                <option value="" disabled>Pilih Jurusan</option>
-                                @foreach ($jurusans as $jurusan)
-                                    <option value="{{ $jurusan->id }}">{{ $jurusan->name }}</option>
-                                @endforeach
+                            <label for="editTahunSelesai" class="form-label">Tahun Selesai</label>
+                            <input type="number" class="form-control" id="editTahunSelesai" name="tahun_selesai"
+                                min="1900" max="2100" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editStatus" class="form-label">Status</label>
+                            <select class="form-select" id="editStatus" name="status" required>
+                                <option value="" disabled>Pilih Status</option>
+                                <option value="aktif">Aktif</option>
+                                <option value="nonaktif">Nonaktif</option>
                             </select>
                         </div>
                     </div>
@@ -135,10 +147,11 @@
     </div>
 
     <script>
-        function openEditModal(id, name, jurusanId) {
-            document.getElementById('editName').value = name;
-            document.getElementById('editJurusanId').value = jurusanId;
-            document.getElementById('editForm').action = '/mata-pelajarans/' + id;
+        function openEditModal(id, tahunMulai, tahunSelesai, status) {
+            document.getElementById('editTahunMulai').value = tahunMulai;
+            document.getElementById('editTahunSelesai').value = tahunSelesai;
+            document.getElementById('editStatus').value = status;
+            document.getElementById('editForm').action = '/tahun-ajarans/' + id;
             var myModal = new bootstrap.Modal(document.getElementById('editModal'), {});
             myModal.show();
         }

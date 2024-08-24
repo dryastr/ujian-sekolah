@@ -53,6 +53,80 @@
             </li>
 
             @if (auth()->user()->role->name == 'admin')
+                <li class="sidebar-item has-sub {{ Request::is('ujians*') ? 'active' : '' }}">
+                    <a href="#" class='sidebar-link'>
+                        <i class="bi bi-brush"></i>
+                        <span>Ujian</span>
+                    </a>
+
+                    <ul class="submenu">
+                        <li class="submenu-item {{ Request::routeIs('ujians.index') ? 'active' : '' }}">
+                            <a href="{{ route('ujians.index') }}" class="submenu-link">Daftar Ujian</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="sidebar-item has-sub {{ Request::is('guru-mata-pelajarans*') ? 'active' : '' }}">
+                    <a href="#" class='sidebar-link'>
+                        <i class="bi bi-person-workspace"></i>
+                        <span>Guru Mapel</span>
+                    </a>
+
+                    <ul class="submenu">
+                        <li class="submenu-item {{ Request::routeIs('guru-mata-pelajarans.index') ? 'active' : '' }}">
+                            <a href="{{ route('guru-mata-pelajarans.index') }}" class="submenu-link">Daftar Guru
+                                Mapel</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="sidebar-item has-sub {{ Request::is('kelas*') ? 'active' : '' }}">
+                    <a href="#" class='sidebar-link'>
+                        <i class="bi bi-houses"></i>
+                        <span>Kelas</span>
+                    </a>
+
+                    <ul class="submenu">
+                        <li class="submenu-item {{ Request::routeIs('kelas.index') ? 'active' : '' }}">
+                            <a href="{{ route('kelas.index') }}" class="submenu-link">Daftar Kelas</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="sidebar-item has-sub {{ Request::is('siswa-kelas*') ? 'active' : '' }}">
+                    <a href="#" class='sidebar-link'>
+                        <i class="bi bi-person-vcard"></i>
+                        <span>Siswa Kelas</span>
+                    </a>
+
+                    <ul class="submenu">
+                        <li class="submenu-item {{ Request::routeIs('siswa-kelas.index') ? 'active' : '' }}">
+                            <a href="{{ route('siswa-kelas.index') }}" class="submenu-link">Daftar Siswa Kelas</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="sidebar-item has-sub {{ Request::is('mata-pelajarans*') ? 'active' : '' }}">
+                    <a href="#" class='sidebar-link'>
+                        <i class="bi bi-book"></i>
+                        <span>Mata Pelajaran</span>
+                    </a>
+
+                    <ul class="submenu">
+                        <li class="submenu-item {{ Request::routeIs('mata-pelajarans.index') ? 'active' : '' }}">
+                            <a href="{{ route('mata-pelajarans.index') }}" class="submenu-link">Daftar Mata
+                                Pelajaran</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="sidebar-item has-sub {{ Request::is('tahun-ajarans*') ? 'active' : '' }}">
+                    <a href="#" class='sidebar-link'>
+                        <i class="bi bi-calendar"></i>
+                        <span>Tahun Ajar</span>
+                    </a>
+
+                    <ul class="submenu">
+                        <li class="submenu-item {{ Request::routeIs('tahun-ajarans.index') ? 'active' : '' }}">
+                            <a href="{{ route('tahun-ajarans.index') }}" class="submenu-link">Daftar Tahun Ajar</a>
+                        </li>
+                    </ul>
+                </li>
                 <li class="sidebar-item has-sub {{ Request::is('jurusans*') ? 'active' : '' }}">
                     <a href="#" class='sidebar-link'>
                         <i class="bi bi-list-nested"></i>
@@ -79,6 +153,47 @@
                 </li>
             @endif
 
+            @if (auth()->user()->role->name == 'teacher')
+                <li class="sidebar-item has-sub {{ Request::is('bank_soals*') ? 'active' : '' }}">
+                    <a href="#" class='sidebar-link'>
+                        <i class="bi bi-bank"></i>
+                        <span>Bank Soal</span>
+                    </a>
+
+                    <ul class="submenu">
+                        <li class="submenu-item {{ Request::routeIs('bank_soals.index') ? 'active' : '' }}">
+                            <a href="{{ route('bank_soals.index') }}" class="submenu-link">Daftar Bank Soal</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="sidebar-item has-sub {{ Request::is('soals*') ? 'active' : '' }}">
+                    <a href="#" class='sidebar-link'>
+                        <i class="bi bi-question"></i>
+                        <span>Soal</span>
+                    </a>
+
+                    <ul class="submenu">
+                        <li class="submenu-item {{ Request::routeIs('soals.index') ? 'active' : '' }}">
+                            <a href="{{ route('soals.index') }}" class="submenu-link">Daftar Soal</a>
+                        </li>
+                    </ul>
+                </li>
+            @endif
+
+            @if (auth()->user()->role->name == 'user')
+                <li class="sidebar-item has-sub {{ Request::is('ujian*') ? 'active' : '' }}">
+                    <a href="#" class='sidebar-link'>
+                        <i class="bi bi-question"></i>
+                        <span>Soal</span>
+                    </a>
+
+                    <ul class="submenu">
+                        <li class="submenu-item {{ Request::routeIs('ujian.index') ? 'active' : '' }}">
+                            <a href="{{ route('ujian.index') }}" class="submenu-link">Daftar Soal</a>
+                        </li>
+                    </ul>
+                </li>
+            @endif
 
             <li class="sidebar-item">
                 <a href="{{ route('logout') }}" class='sidebar-link'

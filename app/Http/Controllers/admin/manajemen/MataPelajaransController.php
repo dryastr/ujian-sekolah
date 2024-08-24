@@ -13,7 +13,7 @@ class MataPelajaransController extends Controller
     {
         $mataPelajarans = MataPelajaran::with('jurusan')->get();
         $jurusans = Jurusan::all();
-        return view('admin.manajemen.mata_pelajaran.index', compact('mataPelajarans', 'jurusans'));
+        return view('admin.admin.mata_pelajaran.index', compact('mataPelajarans', 'jurusans'));
     }
 
     public function store(Request $request)
