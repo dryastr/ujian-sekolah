@@ -7,6 +7,7 @@ use App\Http\Controllers\admin\manajemen\ChangeProfileTeacherController;
 use App\Http\Controllers\admin\manajemen\GuruMataPelajaransController;
 use App\Http\Controllers\admin\manajemen\HasilUjianSiswaGuruController;
 use App\Http\Controllers\admin\manajemen\JurusansController;
+use App\Http\Controllers\admin\manajemen\JurusanSiswaController;
 use App\Http\Controllers\admin\manajemen\KelasController;
 use App\Http\Controllers\admin\manajemen\MataPelajaransController;
 use App\Http\Controllers\admin\manajemen\SiswaKelasController;
@@ -51,6 +52,7 @@ Route::middleware(['auth', 'role.admin'])->group(function () {
     Route::resource('kelas', KelasController::class);
     Route::resource('siswa-kelas', SiswaKelasController::class);
     Route::resource('ujians', UjiansController::class);
+    Route::resource('jurusan_siswa', JurusanSiswaController::class);
     Route::get('/profile-admin/edit', [ChangeProfileTeacherController::class, 'edit'])->name('profile-admin.edit');
     Route::post('/profile-admin/update', [ChangeProfileTeacherController::class, 'update'])->name('profile-admin.update');
 });

@@ -24,6 +24,7 @@ class User extends Authenticatable
         'role_id',
         'img_profile',
         'nis',
+        'jurusan_id'
     ];
 
     /**
@@ -51,7 +52,12 @@ class User extends Authenticatable
     }
 
     public function roles()
-{
-    return $this->belongsTo(Role::class);
-}
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    public function jurusan()
+    {
+        return $this->belongsTo(Jurusan::class);
+    }
 }

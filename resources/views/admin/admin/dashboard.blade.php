@@ -1,38 +1,64 @@
 @extends('layouts.main')
 
-@section('title', 'Dashboard Admin')
+@section('title', 'Dashboard')
 
 @section('content')
     <div class="row">
-        <div class="col-12">
+        <!-- Kelas Count -->
+        <div class="col-md-3 col-12">
             <div class="card">
-                <div class="card-header">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <h4 class="card-title">Daftar Pengguna</h4>
-                    </div>
+                <div class="card-body">
+                    <h5 class="card-title">Jumlah Kelas</h5>
+                    <p class="card-text">{{ $kelasCount }}</p>
                 </div>
-                <div class="card-content">
-                    <div class="card-body">
-                        <div class="tab-content" id="myTabContent">
-                            <div class="tab-pane fade show active" id="active" role="tabpanel"
-                                aria-labelledby="active-tab">
-                                <div class="table-responsive">
-                                    <table class="table table-striped mt-3">
-                                        <thead>
-                                            <tr>
-                                                <th>ID</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            </div>
+        </div>
+
+        <!-- Jurusan Count -->
+        <div class="col-md-3 col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Jumlah Jurusan</h5>
+                    <p class="card-text">{{ $jurusansCount }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Siswa Count -->
+        <div class="col-md-3 col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Jumlah Siswa</h5>
+                    <p class="card-text">{{ $siswaCount }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mata Pelajaran Count -->
+        <div class="col-md-3 col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Jumlah Mata Pelajaran</h5>
+                    <p class="card-text">{{ $mataPelajaranCount }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Guru Count -->
+        <div class="col-md-3 col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Jumlah Guru</h5>
+                    <p class="card-text">{{ $guruCount }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Jumlah Ujian</h5>
+                    <p class="card-text">{{ $ujianCount }}</p>
                 </div>
             </div>
         </div>

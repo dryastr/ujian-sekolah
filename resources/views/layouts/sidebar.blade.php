@@ -139,6 +139,18 @@
                         </li>
                     </ul>
                 </li>
+                <li class="sidebar-item has-sub {{ Request::is('jurusan_siswa*') ? 'active' : '' }}">
+                    <a href="#" class='sidebar-link'>
+                        <i class="bi bi-list-nested"></i>
+                        <span>Jurusan Siswa</span>
+                    </a>
+
+                    <ul class="submenu">
+                        <li class="submenu-item {{ Request::routeIs('jurusan_siswa.index') ? 'active' : '' }}">
+                            <a href="{{ route('jurusan_siswa.index') }}" class="submenu-link">Daftar Jurusan Siswa</a>
+                        </li>
+                    </ul>
+                </li>
                 <li class="sidebar-item has-sub {{ Request::is('add-users*') ? 'active' : '' }}">
                     <a href="#" class='sidebar-link'>
                         <i class="bi bi-people"></i>
