@@ -19,6 +19,8 @@ class Soal extends Model
         'opsi_c',
         'opsi_d',
         'jawaban_benar',
+        'jenis_soal',
+        'jawaban_essay',
         'point',
     ];
 

@@ -13,6 +13,7 @@ class JawabanSiswa extends Model
         'hasil_ujian_id',
         'soal_id',
         'jawaban',
+        'jawaban_essay',
         'status_benar',
     ];
 

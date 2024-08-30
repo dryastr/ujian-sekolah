@@ -36,7 +36,13 @@
                                         <td>{{ $item->guru->name }}</td>
                                         <td>{{ $item->bankSoal ? $item->bankSoal->name : '-' }}</td>
                                         <td>{!! $item->pertanyaan !!}</td>
-                                        <td>{{ $item->jawaban_benar }}</td>
+                                        <td>
+                                            @if ($item->jawaban_benar)
+                                                {!! $item->jawaban_benar !!}
+                                            @else
+                                                {!! $item->jawaban_essay !!}
+                                            @endif
+                                        </td>
                                         <td class="text-nowrap">
                                             <div class="dropdown dropup">
                                                 <button class="btn btn-sm btn-secondary dropdown-toggle" type="button"
@@ -48,7 +54,7 @@
                                                     aria-labelledby="dropdownMenuButton-{{ $item->id }}">
                                                     <li>
                                                         <a class="dropdown-item" href="javascript:void(0)"
-                                                            onclick='openEditModal({{ $item->id }}, "{{ $item->ujian_id }}", "{{ $item->bank_soal_id }}", {!! json_encode($item->pertanyaan) !!}, {!! json_encode($item->opsi_a) !!}, {!! json_encode($item->opsi_b) !!}, {!! json_encode($item->opsi_c) !!}, {!! json_encode($item->opsi_d) !!}, "{{ $item->jawaban_benar }}", {{ $item->point }})'>
+                                                            onclick='openEditModal({{ $item->id }}, "{{ $item->ujian_id }}", "{{ $item->bank_soal_id }}", "{{ $item->jenis_soal }}", {!! json_encode($item->pertanyaan) !!}, {!! json_encode($item->opsi_a) !!}, {!! json_encode($item->opsi_b) !!}, {!! json_encode($item->opsi_c) !!}, {!! json_encode($item->opsi_d) !!}, "{{ $item->jawaban_benar }}", {!! json_encode($item->jawaban_essay) !!}, {{ $item->point }})'>
                                                             Ubah
                                                         </a>
                                                     </li>
@@ -80,200 +86,11 @@
         </div>
     </div>
 
-    <!-- Detail Modal -->
-    <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="detailModalLabel">Detail Soal</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <dl class="row">
-                        <dt class="col-sm-3">Ujian ID:</dt>
-                        <dd class="col-sm-9" id="detail-ujian-id"></dd>
+    @include('admin.teacher.soal.show-detail')
 
-                        <dt class="col-sm-3">Guru ID:</dt>
-                        <dd class="col-sm-9" id="detail-guru-id"></dd>
+    @include('admin.teacher.soal.create')
 
-                        <dt class="col-sm-3">Bank Soal ID:</dt>
-                        <dd class="col-sm-9" id="detail-bank-soal-id"></dd>
-
-                        <dt class="col-sm-3">Pertanyaan:</dt>
-                        <dd class="col-sm-9" id="detail-pertanyaan"></dd>
-
-                        <dt class="col-sm-3">Opsi A:</dt>
-                        <dd class="col-sm-9" id="detail-opsi-a"></dd>
-
-                        <dt class="col-sm-3">Opsi B:</dt>
-                        <dd class="col-sm-9" id="detail-opsi-b"></dd>
-
-                        <dt class="col-sm-3">Opsi C:</dt>
-                        <dd class="col-sm-9" id="detail-opsi-c"></dd>
-
-                        <dt class="col-sm-3">Opsi D:</dt>
-                        <dd class="col-sm-9" id="detail-opsi-d"></dd>
-
-                        <dt class="col-sm-3">Jawaban Benar:</dt>
-                        <dd class="col-sm-9" id="detail-jawaban-benar"></dd>
-                    </dl>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Create Modal -->
-    <div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <form action="{{ route('soals.store') }}" method="POST">
-                    @csrf
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="createModalLabel">Tambah Soal</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="ujian_id" class="form-label">Ujian</label>
-                            <select class="form-select" id="ujian_id" name="ujian_id" required>
-                                <option value="" disabled selected>Pilih Ujian</option>
-                                @foreach ($ujians as $ujian)
-                                    <option value="{{ $ujian->id }}">{{ $ujian->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="bank_soal_id" class="form-label">Bank Soal</label>
-                            <select class="form-select" id="bank_soal_id" name="bank_soal_id">
-                                <option value="" disabled selected>Pilih Bank Soal</option>
-                                @foreach ($bankSoals as $bankSoal)
-                                    <option value="{{ $bankSoal->id }}">{{ $bankSoal->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="pertanyaan" class="form-label">Pertanyaan</label>
-                            <textarea class="form-control summernote" id="pertanyaan" name="pertanyaan" rows="3"></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="opsi_a" class="form-label">Opsi A</label>
-                            <textarea class="form-control summernote" id="opsi_a" name="opsi_a" rows="2"></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="opsi_b" class="form-label">Opsi B</label>
-                            <textarea class="form-control summernote" id="opsi_b" name="opsi_b" rows="2"></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="opsi_c" class="form-label">Opsi C</label>
-                            <textarea class="form-control summernote" id="opsi_c" name="opsi_c" rows="2"></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="opsi_d" class="form-label">Opsi D</label>
-                            <textarea class="form-control summernote" id="opsi_d" name="opsi_d" rows="2"></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="jawaban_benar" class="form-label">Jawaban Benar</label>
-                            <select class="form-select" id="jawaban_benar" name="jawaban_benar">
-                                <option value="" disabled selected>Pilih Jawaban Benar</option>
-                                <option value="A">A</option>
-                                <option value="B">B</option>
-                                <option value="C">C</option>
-                                <option value="D">D</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="point" class="form-label">Point</label>
-                            <input type="number" class="form-control" id="point" name="point" required>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary">Simpan</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Edit Modal -->
-    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <form id="editForm" action="{{ route('soals.update', 0) }}" method="POST">
-                    @csrf
-                    @method('PUT')
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="editModalLabel">Edit Soal</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <input type="hidden" id="edit_soal_id" name="id">
-
-                        <div class="mb-3">
-                            <label for="edit_ujian_id" class="form-label">Ujian</label>
-                            <select class="form-select" id="edit_ujian_id" name="ujian_id" required>
-                                <option value="" disabled>Pilih Ujian</option>
-                                @foreach ($ujians as $ujian)
-                                    <option value="{{ $ujian->id }}">{{ $ujian->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit_bank_soal_id" class="form-label">Bank Soal</label>
-                            <select class="form-select" id="edit_bank_soal_id" name="bank_soal_id">
-                                <option value="" disabled>Pilih Bank Soal</option>
-                                @foreach ($bankSoals as $bankSoal)
-                                    <option value="{{ $bankSoal->id }}">{{ $bankSoal->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit_pertanyaan" class="form-label">Pertanyaan</label>
-                            <textarea class="form-control summernote" id="edit_pertanyaan" name="pertanyaan" rows="3"></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit_opsi_a" class="form-label">Opsi A</label>
-                            <textarea class="form-control summernote" id="edit_opsi_a" name="opsi_a" rows="2"></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit_opsi_b" class="form-label">Opsi B</label>
-                            <textarea class="form-control summernote" id="edit_opsi_b" name="opsi_b" rows="2"></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit_opsi_c" class="form-label">Opsi C</label>
-                            <textarea class="form-control summernote" id="edit_opsi_c" name="opsi_c" rows="2"></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit_opsi_d" class="form-label">Opsi D</label>
-                            <textarea class="form-control summernote" id="edit_opsi_d" name="opsi_d" rows="2"></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit_jawaban_benar" class="form-label">Jawaban Benar</label>
-                            <select class="form-select" id="edit_jawaban_benar" name="jawaban_benar">
-                                <option value="" disabled>Pilih Jawaban Benar</option>
-                                <option value="A">A</option>
-                                <option value="B">B</option>
-                                <option value="C">C</option>
-                                <option value="D">D</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit_point" class="form-label">Point</label>
-                            <input type="number" class="form-control" id="edit_point" name="point" required
-                                min="0">
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary">Simpan</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+    @include('admin.teacher.soal.edit')
 
 @endsection
 
@@ -281,8 +98,8 @@
     <!-- Summernote JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-bs4.min.js"></script>
     <script>
-        function openEditModal(id, ujian_id, bank_soal_id, pertanyaan, opsi_a, opsi_b, opsi_c, opsi_d, jawaban_benar,
-        point) {
+        function openEditModal(id, ujian_id, bank_soal_id, jenis_soal, pertanyaan, opsi_a, opsi_b, opsi_c, opsi_d,
+            jawaban_benar, jawaban_essay, point) {
             // Set form action URL
             document.getElementById('editForm').action = `{{ url('soals') }}/${id}`;
 
@@ -290,7 +107,7 @@
             document.getElementById('edit_soal_id').value = id;
             document.getElementById('edit_ujian_id').value = ujian_id;
             document.getElementById('edit_bank_soal_id').value = bank_soal_id;
-            document.getElementById('edit_jawaban_benar').value = jawaban_benar;
+            document.getElementById('edit_jenis_soal').value = jenis_soal;
             document.getElementById('edit_point').value = point;
 
             // Initialize Summernote editors
@@ -299,6 +116,24 @@
             $('#edit_opsi_b').summernote('code', opsi_b);
             $('#edit_opsi_c').summernote('code', opsi_c);
             $('#edit_opsi_d').summernote('code', opsi_d);
+            $('#edit_jawaban_essay').summernote('code', jawaban_essay);
+
+            // Show or hide fields based on jenis_soal
+            if (jenis_soal === 'pg') {
+                $('#edit_opsi_a-container').removeClass('d-none');
+                $('#edit_opsi_b-container').removeClass('d-none');
+                $('#edit_opsi_c-container').removeClass('d-none');
+                $('#edit_opsi_d-container').removeClass('d-none');
+                $('#edit_jawaban_benar-container').removeClass('d-none');
+                $('#edit_jawaban_essay-container').addClass('d-none');
+            } else {
+                $('#edit_opsi_a-container').addClass('d-none');
+                $('#edit_opsi_b-container').addClass('d-none');
+                $('#edit_opsi_c-container').addClass('d-none');
+                $('#edit_opsi_d-container').addClass('d-none');
+                $('#edit_jawaban_benar-container').addClass('d-none');
+                $('#edit_jawaban_essay-container').removeClass('d-none');
+            }
 
             // Show the modal
             var editModal = new bootstrap.Modal(document.getElementById('editModal'));
@@ -353,6 +188,74 @@
                     });
                 });
             }
+        });
+    </script>
+
+    <script>
+        document.getElementById('jenis_soal').addEventListener('change', function() {
+            var value = this.value;
+
+            // Show/Hide options based on selected type
+            if (value === 'pg') {
+                document.getElementById('pertanyaan-container').classList.remove('d-none');
+                document.getElementById('opsi-container').classList.remove('d-none');
+                document.getElementById('opsi-b-container').classList.remove('d-none');
+                document.getElementById('opsi-c-container').classList.remove('d-none');
+                document.getElementById('opsi-d-container').classList.remove('d-none');
+                document.getElementById('jawaban-container').classList.remove('d-none');
+                document.getElementById('jawaban_essay').value = ''; // Clear esai answer
+                document.getElementById('jawaban-essay-container').classList.add('d-none');
+            } else if (value === 'essay') {
+                document.getElementById('pertanyaan-container').classList.remove('d-none');
+                document.getElementById('opsi-container').classList.add('d-none');
+                document.getElementById('opsi-b-container').classList.add('d-none');
+                document.getElementById('opsi-c-container').classList.add('d-none');
+                document.getElementById('opsi-d-container').classList.add('d-none');
+                document.getElementById('jawaban-container').classList.add('d-none');
+                document.getElementById('jawaban_essay').value = ''; // Clear essay answer
+                document.getElementById('jawaban-essay-container').classList.remove('d-none');
+            } else {
+                document.getElementById('pertanyaan-container').classList.add('d-none');
+                document.getElementById('opsi-container').classList.add('d-none');
+                document.getElementById('opsi-b-container').classList.add('d-none');
+                document.getElementById('opsi-c-container').classList.add('d-none');
+                document.getElementById('opsi-d-container').classList.add('d-none');
+                document.getElementById('jawaban-container').classList.add('d-none');
+                document.getElementById('jawaban-essay-container').classList.add('d-none');
+            }
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const jenisSoalSelect = document.getElementById('edit_jenis_soal');
+            const opsiContainers = [
+                document.getElementById('edit_opsi-container'),
+                document.getElementById('edit_opsi-b-container'),
+                document.getElementById('edit_opsi-c-container'),
+                document.getElementById('edit_opsi-d-container'),
+                document.getElementById('edit_jawaban-container')
+            ];
+            const jawabanEssayContainer = document.getElementById('edit_jawaban-essay-container');
+
+            function toggleSoalFields() {
+                const jenisSoal = jenisSoalSelect.value;
+
+                if (jenisSoal === 'pg') {
+                    opsiContainers.forEach(container => container.classList.remove('d-none'));
+                    jawabanEssayContainer.classList.add('d-none');
+                } else if (jenisSoal === 'essay') {
+                    opsiContainers.forEach(container => container.classList.add('d-none'));
+                    jawabanEssayContainer.classList.remove('d-none');
+                }
+            }
+
+            // Initial toggle when the modal is shown
+            $('#editModal').on('show.bs.modal', function() {
+                toggleSoalFields();
+            });
+
+            // Toggle fields whenever the jenis soal is changed
+            jenisSoalSelect.addEventListener('change', toggleSoalFields);
         });
     </script>
 @endpush

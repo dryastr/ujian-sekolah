@@ -15,14 +15,15 @@
             <div class="card-content">
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-xl">
-                            <thead>
+                        <table class="table table-xl pt-5">
+                            <thead class="">
                                 <tr>
                                     <th>No</th>
                                     <th>Nama</th>
                                     <th>Guru</th>
                                     <th>Mata Pelajaran</th>
                                     <th>Tahun Ajaran</th>
+                                    <th>Status</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -41,6 +42,13 @@
                                                 N/A
                                             @endif
                                         </td>
+                                        <td>
+                                            @if ($item->is_archived == true)
+                                                Diarsipkan
+                                            @else
+                                                Tidak Diarsipkan
+                                            @endif
+                                        </td>
                                         <td class="text-nowrap">
                                             <div class="dropdown dropup">
                                                 <button class="btn btn-sm btn-secondary dropdown-toggle" type="button"
@@ -52,7 +60,7 @@
                                                     aria-labelledby="dropdownMenuButton-{{ $item->id }}">
                                                     <li>
                                                         <a class="dropdown-item" href="javascript:void(0)"
-                                                            onclick="openEditModal({{ $item->id }}, '{{ $item->name }}', '{{ $item->guru_id }}', '{{ $item->mata_pelajaran_id }}', '{{ $item->tahun_ajaran_id }}')">Ubah</a>
+                                                            onclick="openEditModal({{ $item->id }}, '{{ $item->name }}', '{{ $item->guru_id }}', '{{ $item->mata_pelajaran_id }}', '{{ $item->tahun_ajaran_id }}', '{{ $item->ujian_id }}')">Ubah</a>
                                                     </li>
                                                     <li>
                                                         <form action="{{ route('bank_soals.destroy', $item->id) }}"
@@ -61,6 +69,15 @@
                                                             @csrf
                                                             @method('DELETE')
                                                             <button type="submit" class="dropdown-item">Hapus</button>
+                                                        </form>
+                                                    </li>
+                                                    <li>
+                                                        <form action="{{ route('bank_soals.toggleArchived', $item->id) }}"
+                                                            method="POST">
+                                                            @csrf
+                                                            <button type="submit" class="dropdown-item">
+                                                                {{ $item->is_archived ? 'Unarchive' : 'Archive' }}
+                                                            </button>
                                                         </form>
                                                     </li>
                                                 </ul>
@@ -118,6 +135,15 @@
                                 @endforeach
                             </select>
                         </div>
+                        <div class="mb-3">
+                            <label for="ujian_id" class="form-label">Ujian</label>
+                            <select class="form-select" id="ujian_id" name="ujian_id" required>
+                                <option value="" disabled selected>Pilih Ujian</option>
+                                @foreach ($ujians as $ujian)
+                                    <option value="{{ $ujian->id }}">{{ $ujian->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
@@ -172,6 +198,16 @@
                                 @endforeach
                             </select>
                         </div>
+                        <div class="mb-3">
+                            <label for="editUjianId" class="form-label">Ujian</label>
+                            <select class="form-select" id="editUjianId" name="ujian_id" required>
+                                <option value="" selected>Pilih Ujian</option>
+                                <option value="">Kosongkan</option>
+                                @foreach ($ujians as $ujian)
+                                    <option value="{{ $ujian->id }}">{{ $ujian->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
@@ -186,12 +222,13 @@
 
 @push('scripts')
     <script>
-        function openEditModal(id, name, guruId, mataPelajaranId, tahunAjaranId) {
+        function openEditModal(id, name, guruId, mataPelajaranId, tahunAjaranId, ujianId) {
             document.getElementById('editId').value = id;
             document.getElementById('editName').value = name;
             document.getElementById('editGuruId').value = guruId;
             document.getElementById('editMataPelajaranId').value = mataPelajaranId;
             document.getElementById('editTahunAjaranId').value = tahunAjaranId;
+            document.getElementById('editUjianId').value = ujianId ? ujianId : "";
             document.getElementById('editForm').action = `/bank_soals/${id}`;
             new bootstrap.Modal(document.getElementById('editModal')).show();
         }

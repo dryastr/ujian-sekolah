@@ -14,12 +14,16 @@ class SoalsController extends Controller
 {
     public function index()
     {
-        $soals = Soal::with(['ujian', 'guru', 'bankSoal'])->get();
+        $soals = Soal::whereHas('bankSoal', function ($query) {
+            $query->where('is_archived', false);
+        })->with(['ujian', 'guru', 'bankSoal'])->get();
+
         $ujians = Ujian::all();
         $gurus = User::whereHas('role', function ($query) {
             $query->where('name', 'teacher');
         })->get();
-        $bankSoals = BankSoal::all();
+
+        $bankSoals = BankSoal::where('is_archived', false)->get();
 
         return view('admin.teacher.soal.index', compact('soals', 'ujians', 'gurus', 'bankSoals'));
     }
@@ -42,11 +46,13 @@ class SoalsController extends Controller
             'ujian_id' => 'required|exists:ujians,id',
             'bank_soal_id' => 'nullable|exists:bank_soals,id',
             'pertanyaan' => 'required|string',
-            'opsi_a' => 'required|string',
-            'opsi_b' => 'required|string',
-            'opsi_c' => 'required|string',
-            'opsi_d' => 'required|string',
-            'jawaban_benar' => 'required|in:A,B,C,D',
+            'opsi_a' => 'nullable|string',
+            'opsi_b' => 'nullable|string',
+            'opsi_c' => 'nullable|string',
+            'opsi_d' => 'nullable|string',
+            'jawaban_benar' => 'nullable|in:A,B,C,D',
+            'jawaban_essay' => 'nullable|string',
+            'jenis_soal' => 'required|in:pg,essay',
             'point' => 'required|integer|min:0',
         ]);
 
@@ -75,10 +81,20 @@ class SoalsController extends Controller
         }
 
         $validated['pertanyaan'] = handleImages($request->pertanyaan);
-        $validated['opsi_a'] = handleImages($request->opsi_a);
-        $validated['opsi_b'] = handleImages($request->opsi_b);
-        $validated['opsi_c'] = handleImages($request->opsi_c);
-        $validated['opsi_d'] = handleImages($request->opsi_d);
+
+        if ($validated['jenis_soal'] === 'pg') {
+            $validated['opsi_a'] = handleImages($request->opsi_a);
+            $validated['opsi_b'] = handleImages($request->opsi_b);
+            $validated['opsi_c'] = handleImages($request->opsi_c);
+            $validated['opsi_d'] = handleImages($request->opsi_d);
+        } elseif ($validated['jenis_soal'] === 'essay') {
+            $validated['jawaban_essay'] = handleImages($request->jawaban_essay);
+            $validated['opsi_a'] = null;
+            $validated['opsi_b'] = null;
+            $validated['opsi_c'] = null;
+            $validated['opsi_d'] = null;
+            $validated['jawaban_benar'] = null;
+        }
 
         if ($validated['bank_soal_id']) {
             $bankSoal = BankSoal::find($validated['bank_soal_id']);
@@ -92,10 +108,11 @@ class SoalsController extends Controller
             $bankSoal->increment('total_soal');
         }
 
-        $soal = Soal::create($validated);
+        Soal::create($validated);
 
         return redirect()->route('soals.index')->with('success', 'Soal berhasil ditambahkan.');
     }
+
 
     public function update(Request $request, $id)
     {

@@ -16,6 +16,8 @@ class BankSoal extends Model
         'tahun_ajaran_id',
         'total_soal',
         'total_poin',
+        'ujian_id',
+        'is_archived',
     ];
 
     public function guru()
@@ -31,5 +33,10 @@ class BankSoal extends Model
     public function tahunAjaran()
     {
         return $this->belongsTo(TahunAjaran::class, 'tahun_ajaran_id');
+    }
+
+    public function ujian()
+    {
+        return $this->belongsTo(Ujian::class);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\user\manajemen;
 
 use App\Http\Controllers\Controller;
+use App\Models\BankSoal;
 use App\Models\HasilUjian;
 use App\Models\JawabanSiswa;
 use App\Models\Soal;
@@ -21,8 +22,11 @@ class JawabanSiswasController extends Controller
      */
     public function create($ujian_id)
     {
-        $soals = Soal::where('ujian_id', $ujian_id)->get();
         $ujian = Ujian::findOrFail($ujian_id);
+
+        $bankSoals = BankSoal::where('ujian_id', $ujian_id)->where('is_archived', false)->get();
+
+        $soals = Soal::whereIn('bank_soal_id', $bankSoals->pluck('id'))->get();
 
         return view('user.ujians.create', compact('soals', 'ujian'));
     }
@@ -35,7 +39,7 @@ class JawabanSiswasController extends Controller
         $user = auth()->user();
 
         $request->validate([
-            'jawaban.*' => 'required|in:A,B,C,D',
+            'jawaban.*' => 'nullable',
         ]);
 
         $hasilUjian = HasilUjian::create([
@@ -48,22 +52,34 @@ class JawabanSiswasController extends Controller
 
         foreach ($request->jawaban as $soal_id => $jawaban) {
             $soal = Soal::find($soal_id);
-            $statusBenar = $soal->jawaban_benar === $jawaban;
 
-            JawabanSiswa::create([
-                'hasil_ujian_id' => $hasilUjian->id,
-                'soal_id' => $soal_id,
-                'jawaban' => $jawaban,
-                'status_benar' => $statusBenar,
-            ]);
+            if ($soal->jenis_soal === 'pg') {
+                $statusBenar = $soal->jawaban_benar === $jawaban;
 
-            if ($statusBenar) {
-                $totalPoints += $soal->point;
+                JawabanSiswa::create([
+                    'hasil_ujian_id' => $hasilUjian->id,
+                    'soal_id' => $soal_id,
+                    'jawaban' => $jawaban,
+                    'jawaban_essay' => null,
+                    'status_benar' => $statusBenar,
+                ]);
+
+                if ($statusBenar) {
+                    $totalPoints += $soal->point;
+                }
+            } elseif ($soal->jenis_soal === 'essay') {
+                JawabanSiswa::create([
+                    'hasil_ujian_id' => $hasilUjian->id,
+                    'soal_id' => $soal_id,
+                    'jawaban' => null,
+                    'jawaban_essay' => $jawaban,
+                    'status_benar' => 0,
+                ]);
             }
         }
 
         $hasilUjian->update(['nilai' => $totalPoints]);
 
-        return redirect()->route('ujian.index')->with('success', 'Jawaban berhasil disimpan.');
+        return redirect()->route('ujian.index')->with('success', 'Hasil Ujian berhasil disimpan.');
     }
 }

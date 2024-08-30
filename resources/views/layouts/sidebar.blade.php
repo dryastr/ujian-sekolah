@@ -154,6 +154,18 @@
             @endif
 
             @if (auth()->user()->role->name == 'teacher')
+                <li class="sidebar-item has-sub {{ Request::is('hasil-ujian*') ? 'active' : '' }}">
+                    <a href="#" class='sidebar-link'>
+                        <i class="bi bi-people-fill"></i>
+                        <span>Daftar Ujian Siswa</span>
+                    </a>
+
+                    <ul class="submenu">
+                        <li class="submenu-item {{ Request::routeIs('hasil-ujian.index') ? 'active' : '' }}">
+                            <a href="{{ route('hasil-ujian.index') }}" class="submenu-link">Daftar Daftar Ujian Siswa</a>
+                        </li>
+                    </ul>
+                </li>
                 <li class="sidebar-item has-sub {{ Request::is('bank_soals*') ? 'active' : '' }}">
                     <a href="#" class='sidebar-link'>
                         <i class="bi bi-bank"></i>
@@ -183,13 +195,26 @@
             @if (auth()->user()->role->name == 'user')
                 <li class="sidebar-item has-sub {{ Request::is('ujian*') ? 'active' : '' }}">
                     <a href="#" class='sidebar-link'>
-                        <i class="bi bi-question"></i>
-                        <span>Soal</span>
+                        <i class="bi bi-list-ol"></i>
+                        <span>Ujian</span>
                     </a>
 
                     <ul class="submenu">
                         <li class="submenu-item {{ Request::routeIs('ujian.index') ? 'active' : '' }}">
                             <a href="{{ route('ujian.index') }}" class="submenu-link">Daftar Soal</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="sidebar-item has-sub {{ Request::is('hasil-ujian-siswa*') ? 'active' : '' }}">
+                    <a href="#" class='sidebar-link'>
+                        <i class="bi bi-trophy"></i>
+                        <span>Hasil Ujian</span>
+                    </a>
+
+                    <ul class="submenu">
+                        <li class="submenu-item {{ Request::routeIs('hasil-ujian-siswa.index') ? 'active' : '' }}">
+                            <a href="{{ route('hasil-ujian-siswa.index') }}" class="submenu-link">Daftar Hasil Ujian</a>
                         </li>
                     </ul>
                 </li>
